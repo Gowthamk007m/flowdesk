@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Department, Organization
+from .models import Department, Organization, Role
 
 
 @admin.register(Organization)
@@ -10,16 +10,11 @@ class OrganizationAdmin(admin.ModelAdmin):
         "email",
         "phone",
         "is_active",
-        "created_at",
     )
 
     search_fields = (
         "name",
         "email",
-    )
-
-    list_filter = (
-        "is_active",
     )
 
 
@@ -29,7 +24,6 @@ class DepartmentAdmin(admin.ModelAdmin):
         "name",
         "organization",
         "is_active",
-        "created_at",
     )
 
     search_fields = (
@@ -39,5 +33,16 @@ class DepartmentAdmin(admin.ModelAdmin):
 
     list_filter = (
         "organization",
+    )
+
+
+@admin.register(Role)
+class RoleAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
         "is_active",
+    )
+
+    search_fields = (
+        "name",
     )
