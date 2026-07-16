@@ -35,6 +35,11 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 
 
+#Redis configuration
+REDIS_HOST = env("REDIS_HOST")
+
+REDIS_PORT = env.int("REDIS_PORT")
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,8 +49,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     "apps.accounts",
-     "apps.organizations",
+    "apps.organizations",
+    "apps.core",
+
+
+    "rest_framework",
+    "drf_spectacular"
 ]
 
 MIDDLEWARE = [
@@ -136,3 +147,19 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "FlowDesk API",
+    "DESCRIPTION": "Enterprise Workflow & Case Management System",
+    "VERSION": "1.0.0",
+}
