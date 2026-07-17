@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import environ
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -53,10 +54,12 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.organizations",
     "apps.core",
+    "apps.cases",
 
 
     "rest_framework",
-    "drf_spectacular"
+    "drf_spectacular",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 MIDDLEWARE = [
@@ -162,4 +165,15 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "FlowDesk API",
     "DESCRIPTION": "Enterprise Workflow & Case Management System",
     "VERSION": "1.0.0",
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+
+    "UPDATE_LAST_LOGIN": True,
 }
