@@ -80,4 +80,4 @@ class Case(TimeStampedUUIDModel):
         ]
 
     def __str__(self):
-        return f"{self.case_number} - {self.title}"
+        return f"{self.case_number} - {self.title}-{self.id}"

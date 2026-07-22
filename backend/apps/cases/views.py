@@ -8,6 +8,15 @@ from .models import Case
 from .serializers import CaseSerializer
 from .services import create_case
 
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
+
+from .serializers import (
+    CaseSerializer,
+    ChangeStatusSerializer,
+)
+from .services import change_case_status
 
 class CaseViewSet(ModelViewSet):
     serializer_class = CaseSerializer
@@ -50,4 +59,25 @@ class CaseViewSet(ModelViewSet):
         serializer.instance = create_case(
             validated_data=serializer.validated_data,
             created_by=self.request.user,
+        )
+    
+    
+    @action( detail=True, methods=["post"], url_path="change-status")
+    def change_status(self, request, pk=None):
+        case = self.get_object()
+
+        serializer = ChangeStatusSerializer(
+            data=request.data,
+        )
+        serializer.is_valid(raise_exception=True)
+
+        case = change_case_status(
+            case=case,
+            new_status=serializer.validated_data["status"],
+            changed_by=request.user,
+        )
+
+        return Response(
+            CaseSerializer(case).data,
+            status=status.HTTP_200_OK,
         )

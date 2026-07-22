@@ -1,9 +1,11 @@
 from datetime import datetime
 
+from django.utils import timezone
 from django.db import transaction
+from rest_framework.exceptions import ValidationError
 
-from .models import Case
-
+from .models import Case, CaseStatus
+from .constants import ALLOWED_STATUS_TRANSITIONS
 
 @transaction.atomic
 def create_case(*, validated_data, created_by):
@@ -24,3 +26,52 @@ def create_case(*, validated_data, created_by):
         created_by=created_by,
         **validated_data,
     )
+
+@transaction.atomic
+def change_case_status(*, case, new_status, changed_by):
+    """
+    Change the status of a case after validating the workflow.
+
+    Args:
+        case: Case instance.
+        new_status: Target status.
+        changed_by: User performing the action.
+
+    Returns:
+        Updated Case instance.
+
+    Raises:
+        ValidationError: If the requested transition is not allowed.
+    """
+
+    allowed_transitions = ALLOWED_STATUS_TRANSITIONS.get(
+        case.status,
+        [],
+    )
+
+    if new_status not in allowed_transitions:
+        raise ValidationError(
+            {
+                "status": (
+                    f"Cannot change status from "
+                    f"'{case.status}' to '{new_status}'."
+                )
+            }
+        )
+
+    case.status = new_status
+
+    if new_status == CaseStatus.CLOSED:
+        case.closed_at = timezone.now()
+
+    elif ( case.status == CaseStatus.CLOSED and new_status == CaseStatus.IN_PROGRESS ):
+        case.closed_at = None
+
+    case.save(
+        update_fields=[
+            "status",
+            "closed_at",
+        ]
+    )
+
+    return case
