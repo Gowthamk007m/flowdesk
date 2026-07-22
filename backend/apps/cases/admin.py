@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Case
+from .models import Case,CaseComment
 
 
 @admin.register(Case)
@@ -23,6 +23,30 @@ class CaseAdmin(admin.ModelAdmin):
     search_fields = (
         "case_number",
         "title",
+    )
+
+    ordering = ("-created_at",)
+
+
+@admin.register(CaseComment)
+class CaseCommentAdmin(admin.ModelAdmin):
+    list_display = (
+        "case",
+        "author",
+        "comment",
+        "created_at",
+    )
+
+    list_filter = (
+        "case__status",
+        "case__priority",
+        "author",
+    )
+
+    search_fields = (
+        "case__case_number",
+        "author__username",
+        "comment",
     )
 
     ordering = ("-created_at",)
