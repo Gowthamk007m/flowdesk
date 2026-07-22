@@ -7,6 +7,9 @@ from rest_framework.exceptions import ValidationError
 from .models import Case, CaseStatus
 from .constants import ALLOWED_STATUS_TRANSITIONS
 
+from .models import CaseComment
+
+
 @transaction.atomic
 def create_case(*, validated_data, created_by):
     year = datetime.now().year
@@ -75,3 +78,27 @@ def change_case_status(*, case, new_status, changed_by):
     )
 
     return case
+
+
+
+
+
+@transaction.atomic
+def create_comment(*, case, author, comment):
+    """
+    Create a comment for a case.
+
+    Args:
+        case: Case instance.
+        author: User creating the comment.
+        comment: Comment text.
+
+    Returns:
+        Created CaseComment instance.
+    """
+
+    return CaseComment.objects.create(
+        case=case,
+        author=author,
+        comment=comment.strip(),
+    )

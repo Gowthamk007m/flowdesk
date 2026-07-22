@@ -4,6 +4,8 @@ from common.models import TimeStampedUUIDModel
 from apps.accounts.models import User
 from apps.organizations.models import Department, Organization
 
+import uuid
+from django.conf import settings
 
 class CaseStatus(models.TextChoices):
     OPEN = "OPEN", "Open"
@@ -81,3 +83,43 @@ class Case(TimeStampedUUIDModel):
 
     def __str__(self):
         return f"{self.case_number} - {self.title}-{self.id}"
+
+
+
+
+
+
+class CaseComment(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+
+    case = models.ForeignKey(
+        "cases.Case",
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="case_comments",
+    )
+
+    comment = models.TextField()
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.author} - {self.case.case_number}"

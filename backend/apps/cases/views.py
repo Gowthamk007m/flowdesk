@@ -4,13 +4,17 @@ from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
-from .models import Case
-from .serializers import CaseSerializer
+from .models import Case,CaseComment
 from .services import create_case
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+
+from django.shortcuts import get_object_or_404
+
+from .serializers import CommentSerializer
+from .services import create_comment
 
 from .serializers import (
     CaseSerializer,
@@ -80,4 +84,45 @@ class CaseViewSet(ModelViewSet):
         return Response(
             CaseSerializer(case).data,
             status=status.HTTP_200_OK,
+        )
+    
+
+
+from rest_framework import mixins, viewsets
+
+
+class CommentViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = CaseComment.objects.select_related(
+            "author",
+            "case",
+        )
+
+        case_id = self.kwargs.get("case_id")
+
+        if case_id:
+            queryset = queryset.filter(case_id=case_id)
+
+        return queryset
+
+    def perform_create(self, serializer):
+        case = get_object_or_404(
+            Case,
+            pk=self.kwargs["case_id"],
+        )
+
+        serializer.instance = create_comment(
+            case=case,
+            author=self.request.user,
+            comment=serializer.validated_data["comment"],
         )
