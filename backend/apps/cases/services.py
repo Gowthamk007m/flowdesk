@@ -8,11 +8,11 @@ from .models import Case, CaseStatus
 from .constants import ALLOWED_STATUS_TRANSITIONS
 
 from .models import (
-    Case,
     CaseComment,
     ActivityLog,
-    CaseStatus,
 )
+
+from django.db.models import Count, Q
 
 @transaction.atomic
 def create_case(*, validated_data, created_by):
@@ -154,4 +154,56 @@ def log_activity(
         action=action,
         old_value=old_value,
         new_value=new_value,
+    )
+
+
+def get_dashboard_statistics(*, organization):
+    """
+    Return dashboard statistics for an organization.
+    """
+
+    queryset = Case.objects.filter(
+        organization=organization,
+        is_active=True,
+    )
+
+    return queryset.aggregate(
+        total_cases=Count("id"),
+
+        open_cases=Count(
+            "id",
+            filter=Q(status=CaseStatus.OPEN),
+        ),
+
+        in_progress_cases=Count(
+            "id",
+            filter=Q(status=CaseStatus.IN_PROGRESS),
+        ),
+
+        on_hold_cases=Count(
+            "id",
+            filter=Q(status=CaseStatus.ON_HOLD),
+        ),
+
+        resolved_cases=Count(
+            "id",
+            filter=Q(status=CaseStatus.RESOLVED),
+        ),
+
+        closed_cases=Count(
+            "id",
+            filter=Q(status=CaseStatus.CLOSED),
+        ),
+
+        overdue_cases=Count(
+            "id",
+            filter=Q(
+                due_date__lt=timezone.now(),
+                status__in=[
+                    CaseStatus.OPEN,
+                    CaseStatus.IN_PROGRESS,
+                    CaseStatus.ON_HOLD,
+                ],
+            ),
+        ),
     )

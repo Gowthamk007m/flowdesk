@@ -4,7 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
-from .models import Case,CaseComment
+from .models import Case,CaseComment,CaseStatus
 from .services import create_case
 
 from rest_framework.decorators import action
@@ -23,6 +23,10 @@ from .serializers import (
 )
 from .services import change_case_status
 from .serializers import ActivityLogSerializer
+
+from .serializers import DashboardSerializer
+from .services import get_dashboard_statistics
+
 
 class CaseViewSet(ModelViewSet):
     serializer_class = CaseSerializer
@@ -103,6 +107,19 @@ class CaseViewSet(ModelViewSet):
 
         return Response(serializer.data)
 
+    @action(
+    detail=False,
+    methods=["get"],
+    url_path="dashboard",
+)
+    def dashboard(self, request):
+        data = get_dashboard_statistics(
+            organization=request.user.organization,
+        )
+
+        serializer = DashboardSerializer(data)
+
+        return Response(serializer.data)
 
 
 class CommentViewSet(
@@ -140,3 +157,6 @@ class CommentViewSet(
             author=self.request.user,
             comment=serializer.validated_data["comment"],
         )
+
+
+

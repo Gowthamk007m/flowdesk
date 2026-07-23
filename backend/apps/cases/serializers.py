@@ -61,3 +61,12 @@ class ActivityLogSerializer(serializers.ModelSerializer):
             "new_value",
             "created_at",
         ]
+
+class DashboardSerializer(serializers.Serializer):
+    total_cases = serializers.IntegerField()
+    open_cases = serializers.IntegerField()
+    in_progress_cases = serializers.IntegerField()
+    on_hold_cases = serializers.IntegerField()
+    resolved_cases = serializers.IntegerField()
+    closed_cases = serializers.IntegerField()
+    overdue_cases = serializers.IntegerField()
