@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Case
 from .models import CaseStatus
 from .models import CaseComment
+from .models import ActivityLog
 
 class CaseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,4 +43,21 @@ class CommentSerializer(serializers.ModelSerializer):
             "author_name",
             "created_at",
             "updated_at",
+        ]
+
+class ActivityLogSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(
+        source="user.get_full_name",
+        read_only=True,
+    )
+
+    class Meta:
+        model = ActivityLog
+        fields = [
+            "id",
+            "action",
+            "user_name",
+            "old_value",
+            "new_value",
+            "created_at",
         ]

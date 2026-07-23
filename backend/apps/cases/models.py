@@ -123,3 +123,74 @@ class CaseComment(models.Model):
 
     def __str__(self):
         return f"{self.author} - {self.case.case_number}"
+    
+
+
+class CaseAttachment(models.Model):
+    id = models.UUIDField( primary_key=True, default=uuid.uuid4, editable=False, )
+
+    case = models.ForeignKey( "cases.Case", on_delete=models.CASCADE, related_name="attachments", )
+    uploaded_by = models.ForeignKey( settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="case_attachments", )
+
+    file = models.FileField( upload_to="case_attachments/", )
+
+    original_filename = models.CharField( max_length=255, )
+
+    uploaded_at = models.DateTimeField( auto_now_add=True, )
+
+    class Meta:
+        ordering = ["-uploaded_at"]
+
+    def __str__(self):
+        return self.original_filename
+
+
+class ActivityLog(models.Model):
+
+    class Action(models.TextChoices):
+        CASE_CREATED = "CASE_CREATED", "Case Created"
+        STATUS_CHANGED = "STATUS_CHANGED", "Status Changed"
+        COMMENT_ADDED = "COMMENT_ADDED", "Comment Added"
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+
+    case = models.ForeignKey(
+        "cases.Case",
+        on_delete=models.CASCADE,
+        related_name="activities",
+    )
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="case_activities",
+    )
+
+    action = models.CharField(
+        max_length=50,
+        choices=Action.choices,
+    )
+
+    old_value = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+
+    new_value = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.case.case_number} - {self.action}"

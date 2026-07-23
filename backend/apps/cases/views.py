@@ -15,12 +15,14 @@ from django.shortcuts import get_object_or_404
 
 from .serializers import CommentSerializer
 from .services import create_comment
+from rest_framework import mixins, viewsets
 
 from .serializers import (
     CaseSerializer,
     ChangeStatusSerializer,
 )
 from .services import change_case_status
+from .serializers import ActivityLogSerializer
 
 class CaseViewSet(ModelViewSet):
     serializer_class = CaseSerializer
@@ -86,9 +88,21 @@ class CaseViewSet(ModelViewSet):
             status=status.HTTP_200_OK,
         )
     
+    @action(
+    detail=True,
+    methods=["get"],
+    url_path="activity",
+    )
+    def activity(self, request, pk=None):
+        case = self.get_object()
 
+        serializer = ActivityLogSerializer(
+            case.activities.all(),
+            many=True,
+        )
 
-from rest_framework import mixins, viewsets
+        return Response(serializer.data)
+
 
 
 class CommentViewSet(
