@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Case,CaseComment
+from .models import Case, CaseAttachment,CaseComment
+
 
 
 @admin.register(Case)
@@ -50,3 +51,23 @@ class CaseCommentAdmin(admin.ModelAdmin):
     )
 
     ordering = ("-created_at",)
+
+@admin.register(CaseAttachment)
+class CaseAttachmentAdmin(admin.ModelAdmin):
+    list_display = (
+        "case",
+        "file",
+        "uploaded_at",
+    )
+
+    list_filter = (
+        "case__status",
+        "case__priority",
+    )
+
+    search_fields = (
+        "case__case_number",
+        "file",
+    )
+
+    ordering = ("-uploaded_at",)

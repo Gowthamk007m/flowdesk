@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Case
+from .models import Case, CaseAttachment
 from .models import CaseStatus
 from .models import CaseComment
 from .models import ActivityLog
@@ -70,3 +70,40 @@ class DashboardSerializer(serializers.Serializer):
     resolved_cases = serializers.IntegerField()
     closed_cases = serializers.IntegerField()
     overdue_cases = serializers.IntegerField()
+
+
+
+class AttachmentSerializer(serializers.ModelSerializer):
+    uploaded_by_name = serializers.CharField(
+        source="uploaded_by.get_full_name",
+        read_only=True,
+    )
+
+    class Meta:
+        model = CaseAttachment
+        file_size = serializers.SerializerMethodField()
+        
+        fields = (
+            "id",
+            "case",
+            "file",
+            "original_filename",
+            "uploaded_by",
+            "uploaded_by_name",
+            "uploaded_at",
+        )
+
+        read_only_fields = (
+            "id",
+            "case",
+            "uploaded_by",
+            "original_filename",
+            "uploaded_at",
+        )
+        
+
+        def get_file_size(self, obj):
+            try:
+                return obj.file.size
+            except Exception:
+                return None

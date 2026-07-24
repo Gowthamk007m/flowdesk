@@ -2,7 +2,7 @@ from django.db import models
 
 from common.models import TimeStampedUUIDModel
 from apps.accounts.models import User
-from apps.organizations.models import Department, Organization
+from apps.organizations.models import Organization
 
 import uuid
 from django.conf import settings
@@ -86,9 +86,6 @@ class Case(TimeStampedUUIDModel):
 
 
 
-
-
-
 class CaseComment(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -151,12 +148,14 @@ class ActivityLog(models.Model):
         CASE_CREATED = "CASE_CREATED", "Case Created"
         STATUS_CHANGED = "STATUS_CHANGED", "Status Changed"
         COMMENT_ADDED = "COMMENT_ADDED", "Comment Added"
+        ATTACHMENT_UPLOADED ="ATTACHMENT_UPLOADED", "Attachment Uploaded"
 
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
     )
+    
 
     case = models.ForeignKey(
         "cases.Case",
@@ -194,3 +193,5 @@ class ActivityLog(models.Model):
 
     def __str__(self):
         return f"{self.case.case_number} - {self.action}"
+
+

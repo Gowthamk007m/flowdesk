@@ -178,6 +178,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "FlowDesk API",
     "DESCRIPTION": "Enterprise Workflow & Case Management System",
     "VERSION": "1.0.0",
+    "COMPONENT_SPLIT_REQUEST": True,
 }
 
 

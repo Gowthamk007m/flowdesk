@@ -4,8 +4,13 @@ from django.utils import timezone
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
 
-from .models import Case, CaseStatus
+from .models import Case, CaseAttachment, CaseStatus
 from .constants import ALLOWED_STATUS_TRANSITIONS
+
+from .tasks import (
+    notify_case_created,
+    notify_status_changed,
+)
 
 from .models import (
     CaseComment,
@@ -16,6 +21,7 @@ from django.db.models import Count, Q
 
 @transaction.atomic
 def create_case(*, validated_data, created_by):
+
     year = datetime.now().year
 
     last_case = ( Case.objects.select_for_update() .filter(case_number__startswith=f"CASE-{year}-") .order_by("-case_number") .first() )
@@ -41,6 +47,11 @@ def create_case(*, validated_data, created_by):
         new_value="Case created",
     )
 
+    notify_case_created.delay(
+        case.case_number,
+        created_by.email,
+    )
+
     return case
 
 @transaction.atomic
@@ -60,6 +71,7 @@ def change_case_status(*, case, new_status, changed_by):
         ValidationError: If the requested transition is not allowed.
     """
 
+    
     allowed_transitions = ALLOWED_STATUS_TRANSITIONS.get(
         case.status,
         [],
@@ -97,6 +109,14 @@ def change_case_status(*, case, new_status, changed_by):
     action=ActivityLog.Action.STATUS_CHANGED,
     old_value=old_status,
     new_value=new_status,
+    )
+
+
+    notify_status_changed.delay(
+        case.case_number,
+        old_status,
+        new_status,
+        changed_by.email,
     )
 
     return case
@@ -207,3 +227,25 @@ def get_dashboard_statistics(*, organization):
             ),
         ),
     )
+
+
+def upload_attachment( *, case, uploaded_by, file, ):
+    attachment = CaseAttachment.objects.create(
+        case=case,
+        uploaded_by=uploaded_by,
+        file=file,
+        original_filename=file.name,
+    )
+
+    log_activity(
+        case=case,
+        user=uploaded_by,
+        action=ActivityLog.Action.ATTACHMENT_UPLOADED,
+        new_value=file.name,
+    )
+
+    return attachment
+
+def delete_attachment(*, attachment):
+    attachment.file.delete(save=False)
+    attachment.delete()
