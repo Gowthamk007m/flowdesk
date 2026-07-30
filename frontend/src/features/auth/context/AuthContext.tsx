@@ -39,14 +39,14 @@ export function AuthProvider({
     }
 
     return (
-        <AuthContext.Provider
-            value={{
-                isAuthenticated,
-                login,
-                logout,
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
+    <AuthContext.Provider
+        value={{
+        isAuthenticated,
+        login,
+        logout,
+        }}
+    >
+        {children}
+    </AuthContext.Provider>
     );
 }
