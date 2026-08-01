@@ -46,21 +46,25 @@ export default function CasesFilters({
                 </SelectTrigger>
 
                 <SelectContent>
-                    <SelectItem value="all">
-                        All Status
-                    </SelectItem>
+                  <SelectItem value="all">All Status</SelectItem>
 
-                    <SelectItem value="Open">
-                        Open
-                    </SelectItem>
+                        <SelectItem value="OPEN">Open</SelectItem>
 
-                    <SelectItem value="Pending">
-                        Pending
-                    </SelectItem>
+                        <SelectItem value="IN_PROGRESS">
+                            In Progress
+                        </SelectItem>
 
-                    <SelectItem value="Closed">
-                        Closed
-                    </SelectItem>
+                        <SelectItem value="ON_HOLD">
+                            On Hold
+                        </SelectItem>
+
+                        <SelectItem value="RESOLVED">
+                            Resolved
+                        </SelectItem>
+
+                        <SelectItem value="CLOSED">
+                            Closed
+                        </SelectItem>
                 </SelectContent>
             </Select>
         </div>

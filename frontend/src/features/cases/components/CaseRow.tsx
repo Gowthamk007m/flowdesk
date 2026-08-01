@@ -12,14 +12,23 @@ interface CaseRowProps {
 
 function getStatusVariant(status: Case["status"]) {
     switch (status) {
-        case "Open":
+        case "OPEN":
             return "default";
 
-        case "Pending":
+        case "IN_PROGRESS":
             return "secondary";
 
-        case "Closed":
+        case "ON_HOLD":
             return "outline";
+
+        case "RESOLVED":
+            return "secondary";
+
+        case "CLOSED":
+            return "outline";
+
+        default:
+            return "secondary";
     }
 }
 
@@ -29,12 +38,12 @@ export default function CaseRow({
     return (
         <TableRow className="cursor-pointer">
             <TableCell className="font-medium">
-                {item.id}
+                {item.case_number}
             </TableCell>
 
             <TableCell>{item.title}</TableCell>
 
-            <TableCell>{item.client}</TableCell>
+            <TableCell>{item.priority}</TableCell>
 
             <TableCell>
                 <Badge variant={getStatusVariant(item.status)}>
@@ -42,7 +51,9 @@ export default function CaseRow({
                 </Badge>
             </TableCell>
 
-            <TableCell>{item.updatedAt}</TableCell>
+            <TableCell>
+                {item.due_date ?? "-"}
+            </TableCell>
         </TableRow>
     );
 }

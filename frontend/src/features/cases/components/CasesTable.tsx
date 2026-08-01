@@ -41,11 +41,11 @@ export default function CasesTable({
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>ID</TableHead>
+                                <TableHead>Case No.</TableHead>
                                 <TableHead>Title</TableHead>
-                                <TableHead>Client</TableHead>
+                                <TableHead>Priority</TableHead>
                                 <TableHead>Status</TableHead>
-                                <TableHead>Updated</TableHead>
+                                <TableHead>Due Date</TableHead>
                             </TableRow>
                         </TableHeader>
 
