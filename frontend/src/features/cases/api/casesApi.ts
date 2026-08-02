@@ -16,3 +16,9 @@ export async function getCases() {
 
     return response.data.results;
 }
+
+export async function getCase(id: string) {
+    const response = await api.get<Case>(`/cases/${id}/`);
+
+    return response.data;
+}

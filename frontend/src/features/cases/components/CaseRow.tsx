@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/table";
 
 import type { Case } from "../types";
-
+import { useNavigate } from "react-router-dom";
 interface CaseRowProps {
     item: Case;
 }
@@ -35,8 +35,12 @@ function getStatusVariant(status: Case["status"]) {
 export default function CaseRow({
     item,
 }: CaseRowProps) {
+    const navigate = useNavigate();
     return (
-        <TableRow className="cursor-pointer">
+       <TableRow
+            className="cursor-pointer hover:bg-muted transition-colors"
+            onClick={() => navigate(`/cases/${item.id}`)}
+        >
             <TableCell className="font-medium">
                 {item.case_number}
             </TableCell>
