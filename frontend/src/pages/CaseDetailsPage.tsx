@@ -18,12 +18,28 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
+import ActivityTimeline from "@/features/cases/components/ActivityTimeline";
+import { useCaseActivity } from "@/features/cases/hooks/useCaseActivity";
+
 import { CASE_STATUSES } from "@/features/cases/constants";
 import { useCase } from "@/features/cases/hooks/useCase";
 import { useChangeStatus } from "@/features/cases/hooks/useChangeStatus";
 
+import CommentsSection from "@/features/cases/components/CommentsSection";
+import { useComments } from "@/features/cases/hooks/useComments";
+import { useCreateComment } from "@/features/cases/hooks/useCreateComment";
+
 export default function CaseDetailsPage() {
     const { id } = useParams();
+    const {
+        data: activities = [],
+    } = useCaseActivity(id!);
+
+    const {
+    data: comments = [],
+} = useComments(id!);
+
+const createCommentMutation = useCreateComment();
 
     const {
         data: caseData,
@@ -44,6 +60,7 @@ export default function CaseDetailsPage() {
     }
 
     const selectedStatus = status ?? caseData.status;
+
 
     return (
         <div className="space-y-6">
@@ -169,6 +186,33 @@ export default function CaseDetailsPage() {
 
                 </CardContent>
 
+            </Card>
+
+
+<CommentsSection
+    comments={comments}
+    isSubmitting={createCommentMutation.isPending}
+    onSubmit={(comment) =>
+        createCommentMutation.mutate({
+            caseId: id!,
+            comment,
+        })
+    }
+/>
+
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>
+                        Activity
+                    </CardTitle>
+                </CardHeader>
+
+                <CardContent>
+                    <ActivityTimeline
+                        activities={activities}
+                    />
+                </CardContent>
             </Card>
 
         </div>

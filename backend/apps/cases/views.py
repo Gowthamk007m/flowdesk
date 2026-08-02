@@ -32,7 +32,9 @@ from .serializers import DashboardSerializer
 from .services import get_dashboard_statistics
 
 
-
+@extend_schema(
+    responses=ActivityLogSerializer(many=True),
+)
 class CaseViewSet(ModelViewSet):
     serializer_class = CaseSerializer
     permission_classes = [IsAuthenticated]
