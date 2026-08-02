@@ -29,6 +29,8 @@ import CommentsSection from "@/features/cases/components/CommentsSection";
 import { useComments } from "@/features/cases/hooks/useComments";
 import { useCreateComment } from "@/features/cases/hooks/useCreateComment";
 
+
+
 export default function CaseDetailsPage() {
     const { id } = useParams();
     const {
@@ -201,19 +203,9 @@ const createCommentMutation = useCreateComment();
 />
 
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>
-                        Activity
-                    </CardTitle>
-                </CardHeader>
-
-                <CardContent>
-                    <ActivityTimeline
-                        activities={activities}
-                    />
-                </CardContent>
-            </Card>
+          <ActivityTimeline
+    activities={activities}
+/>
 
         </div>
     );

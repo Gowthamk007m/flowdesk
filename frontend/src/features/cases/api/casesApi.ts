@@ -4,6 +4,7 @@ import type { Case } from "../types";
 import type {
     CreateCommentRequest,
 } from "../types";
+import type { Activity } from "../types";
 interface PaginatedResponse<T> {
     count: number;
     next: string | null;
@@ -40,7 +41,7 @@ export async function changeCaseStatus(
 }
 
 export async function getCaseActivity(id: string) {
-    const response = await api.get(
+    const response = await api.get<Activity[]>(
         `/cases/${id}/activity/`
     );
 
@@ -64,3 +65,4 @@ export async function createComment(
 
     return response.data;
 }
+
