@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -8,7 +10,17 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+
+import { CASE_STATUSES } from "@/features/cases/constants";
 import { useCase } from "@/features/cases/hooks/useCase";
+import { useChangeStatus } from "@/features/cases/hooks/useChangeStatus";
 
 export default function CaseDetailsPage() {
     const { id } = useParams();
@@ -19,6 +31,10 @@ export default function CaseDetailsPage() {
         error,
     } = useCase(id!);
 
+    const changeStatusMutation = useChangeStatus();
+
+    const [status, setStatus] = useState<string | null>(null);
+
     if (isLoading) {
         return <div>Loading case...</div>;
     }
@@ -27,8 +43,11 @@ export default function CaseDetailsPage() {
         return <div>Unable to load case.</div>;
     }
 
+    const selectedStatus = status ?? caseData.status;
+
     return (
         <div className="space-y-6">
+
             <div>
                 <h1 className="text-3xl font-bold">
                     {caseData.case_number}
@@ -40,14 +59,67 @@ export default function CaseDetailsPage() {
             </div>
 
             <Card>
+
                 <CardHeader>
-                    <CardTitle>Case Information</CardTitle>
+                    <CardTitle>
+                        Case Information
+                    </CardTitle>
                 </CardHeader>
 
                 <CardContent className="grid gap-6 md:grid-cols-2">
-                    <div>
+
+                    <div className="space-y-2">
                         <p className="text-sm text-muted-foreground">
                             Status
+                        </p>
+
+                        <div className="flex gap-3">
+
+                            <Select
+                                value={selectedStatus}
+                                onValueChange={(value) =>
+                                    setStatus(value)
+                                }
+                            >
+                                <SelectTrigger className="w-56">
+                                    <SelectValue />
+                                </SelectTrigger>
+
+                                <SelectContent>
+                                    {CASE_STATUSES.map((item) => (
+                                        <SelectItem
+                                            key={item.value}
+                                            value={item.value}
+                                        >
+                                            {item.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+
+                            </Select>
+
+                            <Button
+                                disabled={
+                                    changeStatusMutation.isPending ||
+                                    selectedStatus === caseData.status
+                                }
+                                onClick={() =>
+                                    changeStatusMutation.mutate({
+                                        id: caseData.id,
+                                        status: selectedStatus,
+                                    })
+                                }
+                            >
+                                Update
+                            </Button>
+
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <p className="text-sm text-muted-foreground">
+                            Current Status
                         </p>
 
                         <Badge>
@@ -78,7 +150,11 @@ export default function CaseDetailsPage() {
                             Created
                         </p>
 
-                        <p>{caseData.created_at}</p>
+                        <p>
+                            {new Date(
+                                caseData.created_at
+                            ).toLocaleString()}
+                        </p>
                     </div>
 
                     <div className="md:col-span-2">
@@ -87,11 +163,14 @@ export default function CaseDetailsPage() {
                         </p>
 
                         <p className="mt-2 whitespace-pre-wrap">
-                            {caseData.description}
+                            {caseData.description || "-"}
                         </p>
                     </div>
+
                 </CardContent>
+
             </Card>
+
         </div>
     );
 }

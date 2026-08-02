@@ -22,3 +22,17 @@ export async function getCase(id: string) {
 
     return response.data;
 }
+
+export async function changeCaseStatus(
+    id: string,
+    status: string,
+) {
+    const response = await api.post(
+        `/cases/${id}/change-status/`,
+        {
+            status,
+        },
+    );
+
+    return response.data;
+}

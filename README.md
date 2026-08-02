@@ -15,3 +15,4 @@ An Enterprise Workflow & Case Management Platform built with Django, React, Dock
 ## Status
 
 🚧 Project Initialization
+
