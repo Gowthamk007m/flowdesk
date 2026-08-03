@@ -29,9 +29,17 @@ import CommentsSection from "@/features/cases/components/CommentsSection";
 import { useComments } from "@/features/cases/hooks/useComments";
 import { useCreateComment } from "@/features/cases/hooks/useCreateComment";
 
+import AttachmentsSection from "@/features/cases/components/AttachmentsSection";
+
+import { useAttachments } from "@/features/cases/hooks/useAttachments";
+import { useUploadAttachment } from "@/features/cases/hooks/useUploadAttachment";
+import { useDeleteAttachment } from "@/features/cases/hooks/useDeleteAttachment";
 
 
 export default function CaseDetailsPage() {
+
+    
+
     const { id } = useParams();
     const {
         data: activities = [],
@@ -40,6 +48,17 @@ export default function CaseDetailsPage() {
     const {
     data: comments = [],
 } = useComments(id!);
+
+    const {
+    data: attachments = [],
+} = useAttachments(id!);
+
+const uploadAttachmentMutation =
+    useUploadAttachment();
+
+const deleteAttachmentMutation =
+    useDeleteAttachment();
+
 
 const createCommentMutation = useCreateComment();
 
@@ -205,6 +224,28 @@ const createCommentMutation = useCreateComment();
 
           <ActivityTimeline
     activities={activities}
+/>
+
+<AttachmentsSection
+    attachments={attachments}
+    isUploading={
+        uploadAttachmentMutation.isPending
+    }
+    isDeleting={
+        deleteAttachmentMutation.isPending
+    }
+    onUpload={(file) =>
+        uploadAttachmentMutation.mutate({
+            caseId: id!,
+            file,
+        })
+    }
+    onDelete={(attachmentId) =>
+        deleteAttachmentMutation.mutate({
+            caseId: id!,
+            attachmentId,
+        })
+    }
 />
 
         </div>

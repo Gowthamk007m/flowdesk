@@ -72,3 +72,21 @@ export interface Comment {
 export interface CreateCommentRequest {
     comment: string;
 }
+
+export interface Attachment {
+    id: string;
+
+    case: string;
+
+    file: string;
+
+    original_filename: string;
+
+    uploaded_by: string;
+
+    uploaded_by_name: string;
+
+    uploaded_at: string;
+
+    file_size?: number;
+}

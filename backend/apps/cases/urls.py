@@ -30,6 +30,14 @@ attachment_detail = AttachmentViewSet.as_view(
 urlpatterns = [
     path("", include(router.urls)),
     path( "<uuid:case_id>/comments/", comment_list, name="case-comments", ),
-    path( "cases/<uuid:case_id>/attachments/", attachment_list, name="attachment-list", ),
-    path( "attachments/<uuid:pk>/", attachment_detail, name="attachment-detail", ),
+    path(
+    "<uuid:case_id>/attachments/",
+    attachment_list,
+    name="attachment-list",
+),
+    path(
+    "<uuid:case_id>/attachments/<uuid:pk>/",
+    attachment_detail,
+    name="attachment-detail",
+)
 ]

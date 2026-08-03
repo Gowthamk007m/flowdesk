@@ -5,6 +5,8 @@ import type {
     CreateCommentRequest,
 } from "../types";
 import type { Activity } from "../types";
+import type { Attachment } from "../types";
+
 interface PaginatedResponse<T> {
     count: number;
     next: string | null;
@@ -66,3 +68,41 @@ export async function createComment(
     return response.data;
 }
 
+
+export async function getAttachments(caseId: string) {
+    const response = await api.get<{ results: Attachment[] }>(
+        `/cases/${caseId}/attachments/`
+    );
+
+    return response.data.results;
+}
+
+export async function uploadAttachment(
+    caseId: string,
+    file: File,
+) {
+    const formData = new FormData();
+
+    formData.append("file", file);
+
+    const response = await api.post<Attachment>(
+        `/cases/${caseId}/attachments/`,
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        },
+    );
+
+    return response.data;
+}
+
+export async function deleteAttachment(
+    caseId: string,
+    attachmentId: string,
+) {
+    await api.delete(
+        `/cases/${caseId}/attachments/${attachmentId}/`
+    );
+}
