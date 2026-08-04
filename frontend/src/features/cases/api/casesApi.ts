@@ -138,3 +138,7 @@ export async function updateCase(
 
     return response.data;
 }
+
+export async function deleteCase(id: string) {
+    await api.delete(`/cases/${id}/`);
+}

@@ -38,6 +38,7 @@ import { formatDate } from "@/features/cases/utils/date";
 import LoadingState from "@/components/common/LoadingState";
 import ErrorState from "@/components/common/ErrorState";
 
+import DeleteCaseDialog from "@/features/cases/components/DeleteCaseDialog";
 
 export default function CaseDetailsPage() {
 
@@ -211,8 +212,11 @@ const createCommentMutation = useCreateComment();
 
                     <div className="md:col-span-2 flex justify-end">
                                <Button onClick={() => navigate(`/cases/${caseData.id}/edit`) } >Edit Case</Button>
+                               <DeleteCaseDialog
+            caseId={caseData.id}
+        />
                     </div>
-
+                                
                 </CardContent>
 
          
