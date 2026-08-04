@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import type { Attachment } from "../types";
+import { formatDate } from "../utils/date";
 
 interface AttachmentsSectionProps {
     attachments: Attachment[];
@@ -101,9 +102,7 @@ export default function AttachmentsSection({
                                         </a>
 
                                         <p className="text-xs text-muted-foreground">
-                                            {new Date(
-                                                attachment.uploaded_at
-                                            ).toLocaleString()}
+                                            {formatDate(attachment.uploaded_at)}
                                         </p>
 
                                     </div>

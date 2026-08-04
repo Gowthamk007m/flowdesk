@@ -6,31 +6,13 @@ import {
 
 import type { Case } from "../types";
 import { useNavigate } from "react-router-dom";
+
+import { getStatusVariant } from "../utils/status";
+
 interface CaseRowProps {
     item: Case;
 }
 
-function getStatusVariant(status: Case["status"]) {
-    switch (status) {
-        case "OPEN":
-            return "default";
-
-        case "IN_PROGRESS":
-            return "secondary";
-
-        case "ON_HOLD":
-            return "outline";
-
-        case "RESOLVED":
-            return "secondary";
-
-        case "CLOSED":
-            return "outline";
-
-        default:
-            return "secondary";
-    }
-}
 
 export default function CaseRow({
     item,

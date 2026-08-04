@@ -6,7 +6,9 @@ import type {
 } from "../types";
 import type { Activity } from "../types";
 import type { Attachment } from "../types";
-
+import type {
+    CreateCaseRequest,
+} from "../types";
 interface PaginatedResponse<T> {
     count: number;
     next: string | null;
@@ -105,4 +107,16 @@ export async function deleteAttachment(
     await api.delete(
         `/cases/${caseId}/attachments/${attachmentId}/`
     );
+}
+
+
+export async function createCase(
+    data: CreateCaseRequest,
+) {
+    const response = await api.post<Case>(
+        "/cases/",
+        data,
+    );
+
+    return response.data;
 }

@@ -3,7 +3,7 @@ import {
     CardContent,
 } from "@/components/ui/card";
 
-import EmptyState from "./EmptyState";
+import EmptyState from "../../../components/common/EmptyState";
 
 import {
     Table,

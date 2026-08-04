@@ -34,6 +34,9 @@ import AttachmentsSection from "@/features/cases/components/AttachmentsSection";
 import { useAttachments } from "@/features/cases/hooks/useAttachments";
 import { useUploadAttachment } from "@/features/cases/hooks/useUploadAttachment";
 import { useDeleteAttachment } from "@/features/cases/hooks/useDeleteAttachment";
+import { formatDate } from "@/features/cases/utils/date";
+import LoadingState from "@/components/common/LoadingState";
+import ErrorState from "@/components/common/ErrorState";
 
 
 export default function CaseDetailsPage() {
@@ -72,12 +75,13 @@ const createCommentMutation = useCreateComment();
 
     const [status, setStatus] = useState<string | null>(null);
 
-    if (isLoading) {
-        return <div>Loading case...</div>;
-    }
-
+ if (isLoading) {
+    return (
+        <LoadingState message="Loading case..." />
+    );
+}
     if (error || !caseData) {
-        return <div>Unable to load case.</div>;
+        return <ErrorState message="Unable to load case." />
     }
 
     const selectedStatus = status ?? caseData.status;
@@ -189,9 +193,7 @@ const createCommentMutation = useCreateComment();
                         </p>
 
                         <p>
-                            {new Date(
-                                caseData.created_at
-                            ).toLocaleString()}
+                            {formatDate(caseData.created_at)}
                         </p>
                     </div>
 

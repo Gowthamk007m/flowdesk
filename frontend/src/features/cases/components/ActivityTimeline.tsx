@@ -6,29 +6,14 @@ import {
 } from "@/components/ui/card";
 
 import type { Activity } from "../types";
+import { formatDate } from "../utils/date";
+import { getActivityMessage } from "../utils/activity";
 
 interface ActivityTimelineProps {
     activities: Activity[];
 }
 
-function getActivityMessage(activity: Activity) {
-    switch (activity.action) {
-        case "CASE_CREATED":
-            return "created the case";
 
-        case "STATUS_CHANGED":
-            return `changed status from ${activity.old_value} to ${activity.new_value}`;
-
-        case "COMMENT_ADDED":
-            return "added a comment";
-
-        case "ATTACHMENT_UPLOADED":
-            return "uploaded an attachment";
-
-        default:
-            return activity.action;
-    }
-}
 
 export default function ActivityTimeline({
     activities,
@@ -67,9 +52,7 @@ export default function ActivityTimeline({
                                     </p>
 
                                     <p className="mt-1 text-sm text-muted-foreground">
-                                        {new Date(
-                                            activity.created_at
-                                        ).toLocaleString()}
+                                        {formatDate(activity.created_at)}
                                     </p>
 
                                 </div>

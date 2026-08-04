@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 import type { Comment } from "../types";
+import { formatDate } from "../utils/date";
 
 interface CommentsSectionProps {
     comments: Comment[];
@@ -70,9 +71,7 @@ export default function CommentsSection({
                                     </p>
 
                                     <p className="text-xs text-muted-foreground">
-                                        {new Date(
-                                            comment.created_at
-                                        ).toLocaleString()}
+                                       {formatDate(comment.created_at)}
                                     </p>
                                 </div>
 

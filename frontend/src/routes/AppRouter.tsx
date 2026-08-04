@@ -4,6 +4,7 @@ import DashboardPage from "../pages/DashboardPage";
 import LoginPage from "../pages/LoginPage";
 import CasesPage from "../pages/CasesPage";
 import CaseDetailsPage from "../pages/CaseDetailsPage";
+import CreateCasePage from "@/pages/CreateCasePage";
 
 export default function AppRouter() {
     return (
@@ -17,6 +18,9 @@ export default function AppRouter() {
                     <Route path="cases" element={<CasesPage />} />
 
                     <Route path="cases/:id" element={<CaseDetailsPage />} />
+
+                    <Route path="cases/new" element={<CreateCasePage />} />
+                    
                 </Route>
             </Routes>
         </BrowserRouter>

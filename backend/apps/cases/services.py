@@ -36,9 +36,10 @@ def create_case(*, validated_data, created_by):
 
     case = Case.objects.create(
     case_number=case_number,
+    organization=created_by.organization,
     created_by=created_by,
     **validated_data,
-    )
+)
 
     log_activity(
         case=case,

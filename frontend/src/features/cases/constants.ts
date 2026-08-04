@@ -20,3 +20,22 @@ export const CASE_STATUSES = [
         label: "Closed",
     },
 ] as const;
+
+export const CASE_PRIORITIES = [
+    {
+        value: "LOW",
+        label: "Low",
+    },
+    {
+        value: "MEDIUM",
+        label: "Medium",
+    },
+    {
+        value: "HIGH",
+        label: "High",
+    },
+    {
+        value: "CRITICAL",
+        label: "Critical",
+    },
+] as const;

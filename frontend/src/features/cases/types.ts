@@ -90,3 +90,11 @@ export interface Attachment {
 
     file_size?: number;
 }
+
+export interface CreateCaseRequest {
+    title: string;
+    description: string;
+    status: string;
+    priority: string;
+    due_date?: string;
+}
