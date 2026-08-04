@@ -9,6 +9,10 @@ import type { Attachment } from "../types";
 import type {
     CreateCaseRequest,
 } from "../types";
+
+import type {
+    UpdateCaseRequest,
+} from "../types";
 interface PaginatedResponse<T> {
     count: number;
     next: string | null;
@@ -115,6 +119,20 @@ export async function createCase(
 ) {
     const response = await api.post<Case>(
         "/cases/",
+        data,
+    );
+
+    return response.data;
+}
+
+
+
+export async function updateCase(
+    id: string,
+    data: UpdateCaseRequest,
+) {
+    const response = await api.patch<Case>(
+        `/cases/${id}/`,
         data,
     );
 

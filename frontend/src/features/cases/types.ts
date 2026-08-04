@@ -98,3 +98,10 @@ export interface CreateCaseRequest {
     priority: string;
     due_date?: string;
 }
+export interface UpdateCaseRequest {
+    title: string;
+    description: string;
+    status: string;
+    priority: string;
+    due_date?: string;
+}

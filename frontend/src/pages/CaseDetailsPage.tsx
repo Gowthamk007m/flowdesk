@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -71,6 +71,7 @@ const createCommentMutation = useCreateComment();
         error,
     } = useCase(id!);
 
+    const navigate = useNavigate();
     const changeStatusMutation = useChangeStatus();
 
     const [status, setStatus] = useState<string | null>(null);
@@ -205,10 +206,16 @@ const createCommentMutation = useCreateComment();
                         <p className="mt-2 whitespace-pre-wrap">
                             {caseData.description || "-"}
                         </p>
+                        
+                    </div>
+
+                    <div className="md:col-span-2 flex justify-end">
+                               <Button onClick={() => navigate(`/cases/${caseData.id}/edit`) } >Edit Case</Button>
                     </div>
 
                 </CardContent>
 
+         
             </Card>
 
 
