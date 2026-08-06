@@ -1,31 +1,26 @@
 from rest_framework import serializers
 
-from .models import Case, CaseAttachment
-from .models import CaseStatus
-from .models import CaseComment
-from .models import ActivityLog
+from .models import ActivityLog, Case, CaseAttachment, CaseComment, CaseStatus
+
 
 class CaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Case
         fields = "__all__"
-
         read_only_fields = (
-    "id",
-    "case_number",
-    "created_at",
-    "updated_at",
-    "closed_at",
-    "created_by",
-    "organization",
-    "is_active",
-)
+            "id",
+            "case_number",
+            "created_at",
+            "updated_at",
+            "closed_at",
+            "created_by",
+            "organization",
+            "is_active",
+        )
+
 
 class ChangeStatusSerializer(serializers.Serializer):
-    status = serializers.ChoiceField(
-        choices=CaseStatus.choices
-    )
-
+    status = serializers.ChoiceField(choices=CaseStatus.choices)
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -54,6 +49,7 @@ class CommentSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
+
 class ActivityLogSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(
         source="user.get_full_name",
@@ -71,6 +67,7 @@ class ActivityLogSerializer(serializers.ModelSerializer):
             "created_at",
         ]
 
+
 class DashboardSerializer(serializers.Serializer):
     total_cases = serializers.IntegerField()
     open_cases = serializers.IntegerField()
@@ -81,27 +78,25 @@ class DashboardSerializer(serializers.Serializer):
     overdue_cases = serializers.IntegerField()
 
 
-
 class AttachmentSerializer(serializers.ModelSerializer):
     uploaded_by_name = serializers.CharField(
         source="uploaded_by.get_full_name",
         read_only=True,
     )
+    file_size = serializers.SerializerMethodField()
 
     class Meta:
         model = CaseAttachment
-        file_size = serializers.SerializerMethodField()
-        
         fields = (
             "id",
             "case",
             "file",
+            "file_size",
             "original_filename",
             "uploaded_by",
             "uploaded_by_name",
             "uploaded_at",
         )
-
         read_only_fields = (
             "id",
             "case",
@@ -109,10 +104,9 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "original_filename",
             "uploaded_at",
         )
-        
 
-        def get_file_size(self, obj):
-            try:
-                return obj.file.size
-            except Exception:
-                return None
+    def get_file_size(self, obj):
+        try:
+            return obj.file.size
+        except OSError:
+            return None

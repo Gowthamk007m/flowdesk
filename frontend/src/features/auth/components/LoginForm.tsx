@@ -44,8 +44,8 @@ export default function LoginForm() {
   const loginMutation = useMutation({
     mutationFn: loginApi,
 
-    onSuccess: (data) => {
-      login(data.access, data.refresh);
+    onSuccess: async (data) => {
+      await login(data.access, data.refresh);
 
       toast.success("Welcome back!");
 

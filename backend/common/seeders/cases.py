@@ -75,8 +75,7 @@ def seed_cases(count=50):
             "assigned_to": assigned_to,
             "priority": random.choice(CasePriority.values),
             "status": random.choice(CaseStatus.values),
-            "due_date": timezone.now()
-            + timedelta(days=random.randint(1, 30)),
+            "due_date": timezone.now() + timedelta(days=random.randint(1, 30)),
         }
 
         create_case(

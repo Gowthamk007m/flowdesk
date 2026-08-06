@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env()
 
-root_env_path = BASE_DIR.parent / '.env'
+root_env_path = BASE_DIR.parent / ".env"
 
 if root_env_path.exists():
     environ.Env.read_env(str(root_env_path))
@@ -36,7 +36,7 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 
 
-#Redis configuration
+# Redis configuration
 REDIS_HOST = env("REDIS_HOST")
 
 REDIS_PORT = env.int("REDIS_PORT")
@@ -50,16 +50,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
-    'corsheaders',
-
+    "corsheaders",
     "apps.accounts",
     "apps.organizations",
     "apps.core",
     "apps.cases",
     "common",
-
-
     "rest_framework",
     "drf_spectacular",
     "rest_framework_simplejwt.token_blacklist",
@@ -148,7 +144,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-#User model
+# User model
 AUTH_USER_MODEL = "accounts.User"
 
 
@@ -167,19 +163,13 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
-    ),
-
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
         "rest_framework.filters.OrderingFilter",
     ],
-
-    "DEFAULT_PAGINATION_CLASS":
-        "rest_framework.pagination.PageNumberPagination",
-
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
 }
 
@@ -194,10 +184,8 @@ SPECTACULAR_SETTINGS = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
-
     "UPDATE_LAST_LOGIN": True,
 }
 
@@ -205,13 +193,9 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 
-CELERY_BROKER_URL = (
-    f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
-)
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 
-CELERY_RESULT_BACKEND = (
-    f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
-)
+CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 
 CELERY_ACCEPT_CONTENT = ["json"]
 

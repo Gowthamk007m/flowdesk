@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from .models import Case, CaseAttachment,CaseComment
-
+from .models import Case, CaseAttachment, CaseComment
 
 
 @admin.register(Case)
@@ -51,6 +50,7 @@ class CaseCommentAdmin(admin.ModelAdmin):
     )
 
     ordering = ("-created_at",)
+
 
 @admin.register(CaseAttachment)
 class CaseAttachmentAdmin(admin.ModelAdmin):

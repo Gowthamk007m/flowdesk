@@ -1,69 +1,120 @@
 import {
-    createContext,
-    type ReactNode,
-    useEffect,
-    useState,
+  createContext,
+  type ReactNode,
+  useEffect,
+  useState,
 } from "react";
 
+import {
+  getCurrentUser,
+  logout as logoutApi,
+} from "../api/authApi";
 import { AUTH_UNAUTHORIZED_EVENT } from "../services/authEvents";
 import { tokenService } from "../services/tokenService";
+import type { User } from "../types";
 
 interface AuthContextType {
-    isAuthenticated: boolean;
-
-    login: (access: string, refresh: string) => void;
-
-    logout: () => void;
+  isAuthenticated: boolean;
+  isLoadingUser: boolean;
+  user: User | null;
+  login: (access: string, refresh: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({
-    children,
+  children,
 }: {
-    children: ReactNode;
+  children: ReactNode;
 }) {
-    const [isAuthenticated, setIsAuthenticated] = useState(
-        tokenService.isAuthenticated()
-    );
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    tokenService.isAuthenticated()
+  );
+  const [isLoadingUser, setIsLoadingUser] = useState(
+    tokenService.isAuthenticated()
+  );
+  const [user, setUser] = useState<User | null>(null);
 
+  useEffect(() => {
+    let isMounted = true;
 
-    useEffect(() => {
-        function handleUnauthorized() {
-            tokenService.clearTokens();
-            setIsAuthenticated(false);
+    async function loadUser() {
+      if (!tokenService.isAuthenticated()) {
+        setIsLoadingUser(false);
+        return;
+      }
+
+      try {
+        const currentUser = await getCurrentUser();
+
+        if (isMounted) {
+          setUser(currentUser);
+          setIsAuthenticated(true);
         }
-
-        window.addEventListener(AUTH_UNAUTHORIZED_EVENT, handleUnauthorized);
-
-        return () => {
-            window.removeEventListener(AUTH_UNAUTHORIZED_EVENT, handleUnauthorized);
-        };
-    }, []);
-
-    function login(access: string, refresh: string) {
-        
-        tokenService.setTokens(access, refresh);
-
-        setIsAuthenticated(true);
+      } catch {
+        if (isMounted) {
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingUser(false);
+        }
+      }
     }
 
-    function logout() {
-        tokenService.clearTokens();
+    loadUser();
 
-        setIsAuthenticated(false);
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    function handleUnauthorized() {
+      tokenService.clearTokens();
+      setUser(null);
+      setIsAuthenticated(false);
     }
 
-    return (
+    window.addEventListener(AUTH_UNAUTHORIZED_EVENT, handleUnauthorized);
+
+    return () => {
+      window.removeEventListener(AUTH_UNAUTHORIZED_EVENT, handleUnauthorized);
+    };
+  }, []);
+
+  async function login(access: string, refresh: string) {
+    tokenService.setTokens(access, refresh);
+    setIsAuthenticated(true);
+    setUser(await getCurrentUser());
+  }
+
+  async function logout() {
+    const refresh = tokenService.getRefreshToken();
+
+    if (refresh) {
+      await logoutApi(refresh).catch(() => undefined);
+    }
+
+    tokenService.clearTokens();
+    setUser(null);
+    setIsAuthenticated(false);
+  }
+
+  return (
     <AuthContext.Provider
-        value={{
+      value={{
         isAuthenticated,
+        isLoadingUser,
+        user,
         login,
         logout,
-        }}
+      }}
     >
-        {children}
+      {children}
     </AuthContext.Provider>
-    );
+  );
 }

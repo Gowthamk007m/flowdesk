@@ -32,7 +32,7 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS("Database seeding completed successfully.")
         )
-        
+
     def create_cases(self):
         self.stdout.write("Creating development cases...")
 
@@ -96,8 +96,7 @@ class Command(BaseCommand):
                 "assigned_to": assigned_to,
                 "priority": random.choice(CasePriority.values),
                 "status": random.choice(CaseStatus.values),
-                "due_date": timezone.now()
-                + timedelta(days=random.randint(1, 30)),
+                "due_date": timezone.now() + timedelta(days=random.randint(1, 30)),
             }
 
             case = create_case(
@@ -107,15 +106,11 @@ class Command(BaseCommand):
 
             # Randomly mark some cases as closed
             if case.status == CaseStatus.CLOSED:
-                case.closed_at = timezone.now() - timedelta(
-                    days=random.randint(0, 10)
-                )
+                case.closed_at = timezone.now() - timedelta(days=random.randint(0, 10))
                 case.save(update_fields=["closed_at"])
 
-        self.stdout.write(
-            self.style.SUCCESS("50 cases created successfully.")
-        )
-        
+        self.stdout.write(self.style.SUCCESS("50 cases created successfully."))
+
     def create_organizations(self):
         self.flowdesk, _ = Organization.objects.get_or_create(
             name="FlowDesk Technologies",
@@ -134,17 +129,11 @@ class Command(BaseCommand):
         )
 
     def create_roles(self):
-        self.admin_role, _ = Role.objects.get_or_create(
-            name="Administrator"
-        )
+        self.admin_role, _ = Role.objects.get_or_create(name="Administrator")
 
-        self.manager_role, _ = Role.objects.get_or_create(
-            name="Manager"
-        )
+        self.manager_role, _ = Role.objects.get_or_create(name="Manager")
 
-        self.employee_role, _ = Role.objects.get_or_create(
-            name="Employee"
-        )
+        self.employee_role, _ = Role.objects.get_or_create(name="Employee")
 
     def create_departments(self):
         department_names = [
@@ -189,16 +178,12 @@ class Command(BaseCommand):
     def create_users(self):
         flowdesk_departments = {
             department.name: department
-            for department in Department.objects.filter(
-                organization=self.flowdesk
-            )
+            for department in Department.objects.filter(organization=self.flowdesk)
         }
 
         acme_departments = {
             department.name: department
-            for department in Department.objects.filter(
-                organization=self.acme
-            )
+            for department in Department.objects.filter(organization=self.acme)
         }
 
         # ---------- FlowDesk ----------
@@ -295,6 +280,4 @@ class Command(BaseCommand):
             acme_departments["IT"],
         )
 
-        self.stdout.write(
-            self.style.SUCCESS("Users created successfully.")
-        )
+        self.stdout.write(self.style.SUCCESS("Users created successfully."))

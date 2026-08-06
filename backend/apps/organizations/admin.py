@@ -31,9 +31,7 @@ class DepartmentAdmin(admin.ModelAdmin):
         "organization__name",
     )
 
-    list_filter = (
-        "organization",
-    )
+    list_filter = ("organization",)
 
 
 @admin.register(Role)
@@ -43,6 +41,4 @@ class RoleAdmin(admin.ModelAdmin):
         "is_active",
     )
 
-    search_fields = (
-        "name",
-    )
+    search_fields = ("name",)

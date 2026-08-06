@@ -27,10 +27,10 @@ def get_health_status():
         pass
 
     return {
-    "status": "healthy",
-    "services": {
-        "database": database,
-        "redis": redis_status,
-    },
-    "version": "1.0.0",
-}
+        "status": "healthy",
+        "services": {
+            "database": database,
+            "redis": redis_status,
+        },
+        "version": "1.0.0",
+    }
