@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +23,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function LoginForm() {
+  const location = useLocation();
   const navigate = useNavigate();
+  const redirectTo = location.state?.from?.pathname ?? "/";
 
   const { login } = useAuth();
 
@@ -47,7 +49,7 @@ export default function LoginForm() {
 
       toast.success("Welcome back!");
 
-      navigate("/", {
+      navigate(redirectTo, {
         replace: true,
       });
     },

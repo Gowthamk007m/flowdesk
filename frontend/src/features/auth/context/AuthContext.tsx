@@ -1,9 +1,11 @@
 import {
     createContext,
     type ReactNode,
+    useEffect,
     useState,
 } from "react";
 
+import { AUTH_UNAUTHORIZED_EVENT } from "../services/authEvents";
 import { tokenService } from "../services/tokenService";
 
 interface AuthContextType {
@@ -25,6 +27,20 @@ export function AuthProvider({
     const [isAuthenticated, setIsAuthenticated] = useState(
         tokenService.isAuthenticated()
     );
+
+
+    useEffect(() => {
+        function handleUnauthorized() {
+            tokenService.clearTokens();
+            setIsAuthenticated(false);
+        }
+
+        window.addEventListener(AUTH_UNAUTHORIZED_EVENT, handleUnauthorized);
+
+        return () => {
+            window.removeEventListener(AUTH_UNAUTHORIZED_EVENT, handleUnauthorized);
+        };
+    }, []);
 
     function login(access: string, refresh: string) {
         

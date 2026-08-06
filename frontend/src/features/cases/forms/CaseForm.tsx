@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -47,7 +47,7 @@ export default function CaseForm({
     const {
         register,
         handleSubmit,
-        watch,
+        control,
         setValue,
         formState: { errors },
     } = useForm<CaseFormValues>({
@@ -61,6 +61,16 @@ export default function CaseForm({
             due_date: "",
             ...defaultValues,
         },
+    });
+
+    const status = useWatch({
+        control,
+        name: "status",
+    });
+
+    const priority = useWatch({
+        control,
+        name: "priority",
     });
 
     return (
@@ -130,9 +140,7 @@ export default function CaseForm({
                         </Label>
 
                         <Select
-                            value={watch(
-                                "status"
-                            )}
+                            value={status}
                             onValueChange={(
                                 value
                             ) =>
@@ -185,9 +193,7 @@ export default function CaseForm({
                         </Label>
 
                         <Select
-                            value={watch(
-                                "priority"
-                            )}
+                            value={priority}
                             onValueChange={(
                                 value
                             ) =>
