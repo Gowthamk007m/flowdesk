@@ -4,6 +4,7 @@ import CasesFilters from "@/features/cases/components/CasesFilters";
 import CasesHeader from "@/features/cases/components/CasesHeader";
 import CasesTable from "@/features/cases/components/CasesTable";
 import { useCases } from "@/features/cases/hooks/useCases";
+import ErrorState from "@/components/common/ErrorState";
 
 
 export default function CasesPage() {
@@ -11,8 +12,10 @@ export default function CasesPage() {
     data: cases = [],
     isLoading,
     error,
+    refetch,
     } = useCases();
 
+    
 
     const [search, setSearch] = useState("");
 
@@ -41,12 +44,12 @@ export default function CasesPage() {
 }
 
 if (error) {
-    console.error(error);
-
     return (
-        <pre className="p-6 text-red-500">
-            {JSON.stringify(error, null, 2)}
-        </pre>
+        <ErrorState
+            title="Unable to load cases"
+            error={error}
+            onRetry={refetch}
+        />
     );
 }
  

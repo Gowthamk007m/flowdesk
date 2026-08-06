@@ -8,11 +8,12 @@ import ErrorState from "@/components/common/ErrorState";
 import { useDashboard } from "@/features/dashboard/hooks/useDashboard";
 
 export default function DashboardPage() {
-    const {
-        data,
-        isLoading,
-        error,
-    } = useDashboard();
+const {
+    data,
+    isLoading,
+    error,
+    refetch,
+} = useDashboard();
 
     if (isLoading) {
         return (
@@ -20,11 +21,15 @@ export default function DashboardPage() {
         );
     }
 
-    if (error || !data) {
-        return (
-            <ErrorState message="Unable to load dashboard." />
-        );
-    }
+if (error || !data) {
+    return (
+        <ErrorState
+            title="Unable to load dashboard"
+            error={error}
+            onRetry={refetch}
+        />
+    );
+}
 
     return (
         <div className="space-y-8">
