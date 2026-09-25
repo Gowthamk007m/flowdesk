@@ -92,7 +92,7 @@ class Command(BaseCommand):
             validated_data = {
                 "title": random.choice(titles),
                 "description": random.choice(descriptions),
-                "organization": organization,
+                # "organization": organization,
                 "assigned_to": assigned_to,
                 "priority": random.choice(CasePriority.values),
                 "status": random.choice(CaseStatus.values),
